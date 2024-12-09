@@ -9,9 +9,10 @@ export default function Header({ ogImage }: { ogImage?: boolean }) {
         src="../avatar.jpg"
         fallback="A"
         size="7"
+        alt={persiteSource.fullName}
       />
       <div>
-        <h1 style={{ fontSize: '2.5rem', margin: '0' }}>{persiteSource.name}</h1>
+        <h1 style={{ fontSize: '2.5rem', margin: '0' }}>{persiteSource.fullName}</h1>
         {
           ogImage
           ? (

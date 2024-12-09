@@ -1,6 +1,6 @@
 import type {BadgeProps, ThemeProps} from '@radix-ui/themes';
 export interface PersiteSource {
-  name: string;
+  fullName: string;
   slogan: string;
   mainPageTitle: string;
   mainPageDescription: string;

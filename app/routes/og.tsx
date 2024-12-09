@@ -34,7 +34,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
               margin: '0'
             }}
           >
-            {persiteSource.name}
+            {persiteSource.fullName}
           </h1>
           <span
             style={{
