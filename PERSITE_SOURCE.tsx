@@ -17,6 +17,7 @@ const persiteSource: PersiteSource = {
   slogan: 'Software Engineer & Creator',
   mainPageTitle: "John Doe | Software Engineer & Creator",
   mainPageDescription: "Full-stack developer, entrepreneur, and tech enthusiast.",
+  useSimpleAnalytics: true,
   theme: {
     projectSectionFirst: false,
     shouldShowBlogSection: true,
