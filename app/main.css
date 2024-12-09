@@ -55,8 +55,13 @@ body h1, h2, h3, h4, h5, h6, p, span, div, li {
   display: block;
 }
 
-.project_list .project_list_item a:hover {
+.project_list .project_list_item:hover {
   background-color: var(--gray-a4);
+}
+
+.project_list_item:hover a {
+  transform: scale(1.05);
+  transition: transform 0.2s;
 }
 
 .social-link {
