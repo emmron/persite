@@ -41,7 +41,6 @@
 }
 
 .AccordionTrigger:hover {
-  border-radius: var(--radius-3);
   background-color: var(--gray-a4);
 }
 

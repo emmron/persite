@@ -13,7 +13,7 @@ const ProjectsSection = () => {
             <li className="project_list_item" key={item.title}>
               <Link to={item.link}>
                 <span>{item.title}</span>
-                <Badge color={item.badgeColor}>
+                <Badge color={item.badgeColor} style={{marginTop: '3px'}}>
                   {item.status === 'in_progress' && <Spinner size="1" style={{ display: 'inline-block', }} />}
                   {item.badge}
                 </Badge>

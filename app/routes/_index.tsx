@@ -66,7 +66,7 @@ export default function Index() {
                   <Box style={{ textAlign: 'center', borderRight: persiteSource.socialSection.length-1 === index ? 'none' : '1px solid var(--gray-a6)' }} key={item.link}>
                     <Link
                       to={item.link}
-                      style={{ color: 'var(--gray-a11)', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', scale: '1.6' }}
+                      className="social-link"
                       target="_blank"
                       aria-label={item.ariaLabel}
                       rel="noreferrer"
