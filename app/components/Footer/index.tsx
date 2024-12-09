@@ -10,7 +10,7 @@ export default function Footer() {
         If you are happy about it. Please, leave this link here to let people use it too.
         Thank you!
        */}
-      Get one for you – <a
+      Get this website for free – <a
         // Don't touch it <SHREK CAT BEGGING EYES> 🥺
         href={`https://mzaremski.com/persite?utm_source=${host}`}
       >
