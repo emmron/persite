@@ -29,6 +29,7 @@
   font-family: inherit;
   font-size: 1rem;
   background-color: transparent;
+  color: inherit;
   padding:20px;
   flex: 1;
   display: flex;
@@ -46,18 +47,15 @@
 
 .AccordionContent {
   overflow: hidden;
-  padding: var(--space-4);
+  margin-top: 20px;
 }
 
 .AccordionContent[data-state="open"] {
-  transition: linear 0.5s;
-  /* animation: slideDown 300ms ease-in; */
+  animation: slideDown 300ms ease-in;
 }
 
 .AccordionContent[data-state="closed"] {
-  height: 0;
-transition: linear 0.5s;
-  /* animation: slideUp 300ms ease-in; */
+  animation: slideUp 300ms ease-in;
 }
 
 .AccordionChevron {
@@ -67,7 +65,7 @@ transition: linear 0.5s;
 .AccordionTrigger[data-state="open"]>.AccordionChevron {
   transform: rotate(180deg);
 }
-/* 
+
 @keyframes slideDown {
   from {
     height: 0;
@@ -86,4 +84,4 @@ transition: linear 0.5s;
   to {
     height: 0;
   }
-} */
+}

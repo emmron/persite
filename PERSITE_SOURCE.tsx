@@ -50,10 +50,10 @@ const persiteSource: PersiteSource = {
   accordionSection: {
     title: 'Work with me as',
     items: [
-      {title: 'A freelancer', content: FreelancerAccordionContent},
-      {title: 'A contractor', content: ContractorAccordionContent},
-      {title: 'A full time hire', content: FullTimeHireAccordionContent},
-      {title: 'A co-founder', content: IndieHackerAccordionContent},
+      {title: 'Freelancer', content: FreelancerAccordionContent},
+      {title: 'Contractor', content: ContractorAccordionContent},
+      {title: 'Full time hire', content: FullTimeHireAccordionContent},
+      {title: 'Co-founder', content: IndieHackerAccordionContent},
     ]
   },
   projectsSection: {
