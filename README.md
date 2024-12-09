@@ -3,32 +3,30 @@
 <img width="1052" alt="image" src="./public/persite-vercel-thumbnail.png">
 
 🛠️ Built with modern tech stack:
-
 - Server-side rendering
 - SEO optimized
 - Markdown blog
 - Simple Analytics
 
 🚀 Easy to deploy:
-
 - Deploy with one click
 - Fill one file with your content
 
 🎨 Highly customizable:
-
 - 4 animated backgrounds
 - Dark/Light mode
 - Colors
 - Border radius
 - Scaling
 
-## One click deploy
+You are the owner of the code. Have fun makin whatever change you want!
+Also, you are welcome to contribute to the project.
 
+## One click deploy
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/mzaremski/persite)<br/>
 Live Example: https://persite.vercel.app/
 
 ## Tech stack
-
 - Framework: [Remix](https://remix.run/docs)
 - UI: [Radix Themes](https://www.radix-ui.com/themes)
 - Deployment: [Vercel](https://vercel.com)
@@ -38,32 +36,35 @@ Live Example: https://persite.vercel.app/
 - Simpleanalytics [simpleanalytics](https://simpleanalytics.com/)
 
 ## Usage & Getting Started
-
 1. Click "Deploy" at the top of the file.
-2. Clone the repository was created by Vercel.
-3. Install: `pnpm install` or `yarn install` or `npm install`
-4. Open `PERSITE_SOURCE.tsx` and change the values to your own.
+2. Clone the repository that was created by Vercel.
+3. Fill SITE_URL environmental variable with your domain url
+4. Clone the repository on your local machine
+5. Install: `pnpm install` or `yarn install` or `npm install`
+6. Open `PERSITE_SOURCE.tsx` and change the values to your own.
    - Preview the file: [PERSITE_SOURCE.tsx](https://github.com/mzaremski/persite/blob/main/PERSITE_SOURCE.tsx)
    - To customize theme, you can check this: [Radix playground](https://www.radix-ui.com/themes/playground) then edit `persiteSource.theme.radixConfig`
-5. Start the development server: `pnpm run dev` or `yarn run dev` or `npm run dev`
-6. Push to preview changes on your live website
-7. Create an account on https://simpleanalytics.com/ and add your site URL. The script is already installed on the website.
+7. Start the development server: `pnpm run dev` or `yarn run dev` or `npm run dev` and see the changes
+8. Commit and push to the repository. Vercel will deploy the changes immediately.
+9. Create an account on https://simpleanalytics.com/ and add your site URL. The script is already installed on the website.
+
+## Pro
+**✨Check the PRO plan of Persite Boilerplate✨**: [Get Persite PRO](https://mzaremski.com/persite)
+   - 🚀 Bundle of checklists and tips: Converting Landingpage, pricing tips, launch platforms database and more
+   - Email collecting form + database (on vercel)
+   - Product Hunt (and more) badges to your projects
+   - Dynamic OG images for blog posts
+   - CTA buttons
+   - Backlink to your website 
+   - More styling options
 
 ## Useful links
-
 1. Remix-MDX plugin integration: [Remix.run: Add MDX plugion](https://remix.run/docs/en/main/guides/vite#add-mdx-plugin)
 2. Persite Landingpage: [Persite](https://mzaremski.com/persite)
-3. **✨Check PRO plan of Persite Boilerplate✨**: [Persite PRO](https://mzaremski.com/persite#pro)
-   - Waiting list form
-   - More components
-   - Dynamic OG images for blog
-   - Indie Hacker Starter Pack (Set of checklists, tips, sources)
 4. Persite public repository: [Repo](https://github.com/mzaremski/persite)
 
-To run your Remix app locally, make sure your project's local dependencies are installed
 
 ## Author
-
 by Marcin Zaremski<br/>
 GitHub: https://github.com/mzaremski<br/>
 Website: https://mzaremski.com/<br/>
