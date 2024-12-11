@@ -35,10 +35,10 @@ body h1, h2, h3, h4, h5, h6, p, span, div, li {
   border-right: none;
 }
 
-.project_list .project_list_item:last-child {
+.project_list .project_list_item:last-child,
+.project_list .project_list_item:nth-last-child(2):nth-child(odd) {
   border-bottom: none;
 }
-
 
 .project_list .project_list_item a {
   display: flex;
