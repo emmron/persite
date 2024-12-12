@@ -7,7 +7,7 @@ import type { PersiteSource } from "./persite_source_type";
   - Fill persiteSource with your own content
   - Additionally, you need only to change:
      - public/avatar.jpg picture to your own
-     - public/icon.png
+     - public/favicon.ico
   - There is no need to change anything else!
   - Give some love here: https://x.com/marcinzaremski
 */

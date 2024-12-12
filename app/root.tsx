@@ -60,6 +60,6 @@ export function links() {
     { rel: "stylesheet", href: styles },
     { rel: "stylesheet", href: stylesAccordion },
     { rel: "stylesheet", href: Backgrounds.css[persiteSource.theme.background] },
-    { rel: "icon", href: "/icon.png" },
+    { rel: "icon", href: "/favicon.ico" },
   ];
 } 
