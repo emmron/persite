@@ -35,7 +35,7 @@ Live Example: https://persite.vercel.app/
 - TypeScript
 - Simpleanalytics [simpleanalytics](https://simpleanalytics.com/)
 
-## Usage & Getting Started
+## Getting Started
 1. Click "Deploy" at the top of the file.
 2. Clone the repository that was created by Vercel.
 3. Fill SITE_URL environmental variable with your domain url
@@ -47,6 +47,11 @@ Live Example: https://persite.vercel.app/
 7. Start the development server: `pnpm run dev` or `yarn run dev` or `npm run dev` and see the changes
 8. Commit and push to the repository. Vercel will deploy the changes immediately.
 9. Create an account on https://simpleanalytics.com/ and add your site URL. The script is already installed on the website.
+
+## Usage
+- To add a new blog post: Copy one of the mdx file in `app/routes`. Make sure the blog post file follow this convention:`posts.[url-slug].mdx`. Eg. `posts.my-new-blog-post.mdx`
+- To add a new page: Create a new file in the `app/routes` directory. The name of the file will be the url slug. Eg. `my-new-page.tsx`
+- Check Remix.run docs for more: [Remix.run docs](https://remix.run/docs/en/main)
 
 ## Pro
 **✨Check the PRO plan of Persite Boilerplate✨**: [Get Persite PRO](https://mzaremski.com/persite)
@@ -68,6 +73,6 @@ Live Example: https://persite.vercel.app/
 by Marcin Zaremski<br/>
 GitHub: https://github.com/mzaremski<br/>
 Website: https://mzaremski.com/<br/>
-Twitter: https://twitter.com/marcinzaremski<br/>
+X (formerly Twitter): https://x.com/marcinzaremski<br/>
 
 <img width="1052" alt="image" src="./persite-intro.gif">

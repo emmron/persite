@@ -7,7 +7,7 @@ export default function BlogSection() {
 
   return (
     <Section id="blog-list" size="1">
-      <h1>Blog</h1>
+      <h2>Blog</h2>
 
       <Grid columns="2" gap="3">
         {posts.map(({meta: {title, description}, path}) => (
