@@ -11,6 +11,7 @@ import radixStyles from "@radix-ui/themes/styles.css?url";
 import FontStyles from "@fontsource/lexend/index.css?url";
 import styles from "~/main.css?url";
 import stylesAccordion from "~/accordion.css?url";
+import aflManagerStyles from "~/afl-manager.css?url";
 import Footer from "./components/Footer";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import * as Backgrounds from "./components/Backgrounds";
@@ -59,7 +60,8 @@ export function links() {
     { rel: "stylesheet", href: FontStyles },
     { rel: "stylesheet", href: styles },
     { rel: "stylesheet", href: stylesAccordion },
+    { rel: "stylesheet", href: aflManagerStyles },
     { rel: "stylesheet", href: Backgrounds.css[persiteSource.theme.background] },
     { rel: "icon", href: "/favicon.ico" },
   ];
-} 
+}

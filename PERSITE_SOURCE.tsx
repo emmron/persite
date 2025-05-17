@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { TwitterLogoIcon, LinkedInLogoIcon, InstagramLogoIcon, GitHubLogoIcon } from "@radix-ui/react-icons";
 import type { PersiteSource } from "./persite_source_type";
 
@@ -60,6 +60,13 @@ const persiteSource: PersiteSource = {
   projectsSection: {
     title: 'Projects',
     items: [
+      {
+        title: 'AFL Forum',
+        status: 'released',
+        badge: 'New',
+        badgeColor: 'green',
+        link: '/afl-forum',
+      },
       {
         title: 'ProjectAlpha',
         status: 'in_progress',

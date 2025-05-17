@@ -1,7 +1,8 @@
 import { useRouteLoaderData } from "@remix-run/react";
 
 export default function Footer() {
-  const { host } = useRouteLoaderData('root') as {host: string};
+  const data = useRouteLoaderData('root') as {host?: string} | undefined;
+  const host = data?.host || 'localhost';
 
   return (
     <div style={{ width: '100%', textAlign: 'center', fontSize: '0.9rem', paddingBottom: '1rem' }}>
