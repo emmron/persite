@@ -308,8 +308,17 @@ export default defineConfig(({ mode, command }): UserConfig => {
     
     // Configure plugins with logical order and error handling
     plugins: [
-      // MDX configuration with error handling
-      configureMdx(),
+      // MDX must come before remix according to error message
+      // Apply MDX directly without the configureMdx wrapper
+      mdx({
+        remarkPlugins: [
+          remarkFrontmatter,
+          [remarkMdxFrontmatter, { name: 'frontmatter' }],
+        ],
+        format: 'mdx',
+        jsx: true,
+        jsxImportSource: 'react',
+      }),
       
       // Handle Remix integration with extended options
       remix({
