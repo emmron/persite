@@ -1,0 +1,108 @@
+/* app/afl-manager.css */
+.afl-manager-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #1a1a1a;
+  color: #fff;
+  z-index: 9999;
+}
+.afl-manager-fullscreen main {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.afl-manager-fullscreen footer {
+  display: none;
+}
+.afl-manager-fullscreen [data-background] {
+  display: none !important;
+}
+.afl-manager-fullscreen .rt-Card {
+  background-color: #222;
+  border-color: #444;
+}
+.afl-manager-fullscreen .rt-Heading {
+  color: #fff;
+}
+.afl-manager-fullscreen .rt-Text {
+  color: #ddd;
+}
+.afl-manager-fullscreen .rt-Separator {
+  background-color: #444;
+}
+.afl-manager-fullscreen .rt-Button[data-variant=solid] {
+  background-color: #3b82f6;
+}
+.afl-manager-fullscreen .rt-Button[data-variant=outline] {
+  border-color: #444;
+  color: #ddd;
+}
+.afl-manager-fullscreen .rt-ProgressIndicator {
+  background-color: #333;
+}
+.afl-manager-fullscreen .rt-ProgressIndicator[data-color=green] > span {
+  background-color: #22c55e;
+}
+.afl-manager-fullscreen .rt-ProgressIndicator[data-color=blue] > span {
+  background-color: #3b82f6;
+}
+.afl-manager-fullscreen .rt-ProgressIndicator[data-color=orange] > span {
+  background-color: #f59e0b;
+}
+.afl-manager-fullscreen .rt-ProgressIndicator[data-color=purple] > span {
+  background-color: #8b5cf6;
+}
+.afl-manager-fullscreen .rt-TableRoot {
+  border-color: #444;
+}
+.afl-manager-fullscreen .rt-TableHeader {
+  background-color: #222;
+}
+.afl-manager-fullscreen .rt-TableColumnHeaderCell {
+  color: #aaa;
+  border-bottom-color: #444;
+}
+.afl-manager-fullscreen .rt-TableCell {
+  border-bottom-color: #333;
+}
+.afl-manager-fullscreen .rt-TableRow:hover {
+  background-color: #3b82f61a;
+}
+.afl-manager-fullscreen *::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.afl-manager-fullscreen *::-webkit-scrollbar-track {
+  background: #222;
+}
+.afl-manager-fullscreen *::-webkit-scrollbar-thumb {
+  background-color: #444;
+  border-radius: 4px;
+}
+.afl-manager-fullscreen *::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+.afl-manager-fullscreen [class*=download],
+.afl-manager-fullscreen [id*=download],
+.afl-manager-fullscreen iframe[src*=download],
+.afl-manager-fullscreen a[href*=download] {
+  display: none !important;
+}
+.afl-manager-fullscreen .rt-Text[size="3"][weight=bold] + .rt-Text[size="3"][weight=bold] {
+  margin-left: 5px;
+}
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: .6;
+  }
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
+}

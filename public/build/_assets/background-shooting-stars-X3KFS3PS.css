@@ -1,0 +1,118 @@
+/* app/components/Backgrounds/background-shooting-stars.css */
+#background-shooting-stars {
+  z-index: -1;
+}
+@keyframes animateBg {
+  0%, to {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+#background-shooting-stars span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 4px #ffffff1a,
+    0 0 0 8px #ffffff1a,
+    0 0 20px #ffffff1a;
+  animation: animate 3s linear infinite;
+}
+#background-shooting-stars span:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 300px;
+  height: 1px;
+  background: linear-gradient(90deg, #fff, transparent);
+}
+@keyframes animate {
+  0% {
+    transform: rotate(315deg) translate(0);
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  to {
+    transform: rotate(315deg) translate(-1000px);
+    opacity: 0;
+  }
+}
+#background-shooting-stars span:nth-child(1) {
+  top: 0;
+  right: 0;
+  left: initial;
+  animation-delay: 0s;
+  animation-duration: 1s;
+}
+#background-shooting-stars span:nth-child(2) {
+  top: 0;
+  right: 80px;
+  left: initial;
+  animation-delay: .2s;
+  animation-duration: 3s;
+}
+#background-shooting-stars span:nth-child(3) {
+  top: 80;
+  right: 0;
+  left: initial;
+  animation-delay: .4s;
+  animation-duration: 2s;
+}
+#background-shooting-stars span:nth-child(4) {
+  top: 0;
+  right: 180px;
+  left: initial;
+  animation-delay: .6s;
+  animation-duration: 1.5s;
+}
+#background-shooting-stars span:nth-child(5) {
+  top: 0;
+  right: 400px;
+  left: initial;
+  animation-delay: .8s;
+  animation-duration: 2.5s;
+}
+#background-shooting-stars span:nth-child(6) {
+  top: 0;
+  right: 600px;
+  left: initial;
+  animation-delay: 1s;
+  animation-duration: 3s;
+}
+#background-shooting-stars span:nth-child(7) {
+  top: 300px;
+  right: 0;
+  left: initial;
+  animation-delay: 1.2s;
+  animation-duration: 1.75s;
+}
+#background-shooting-stars span:nth-child(8) {
+  top: 0;
+  right: 700px;
+  left: initial;
+  animation-delay: 1.4s;
+  animation-duration: 1.25s;
+}
+#background-shooting-stars span:nth-child(9) {
+  top: 0;
+  right: 1000px;
+  left: initial;
+  animation-delay: .75s;
+  animation-duration: 2.25s;
+}
+#background-shooting-stars span:nth-child(9) {
+  top: 0;
+  right: 450px;
+  left: initial;
+  animation-delay: 2.75s;
+  animation-duration: 2.75s;
+}

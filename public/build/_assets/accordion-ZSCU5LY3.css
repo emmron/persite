@@ -1,0 +1,68 @@
+/* app/accordion.css */
+.AccordionRoot h3 {
+  margin: 0;
+  padding: 0;
+}
+.AccordionItem {
+  overflow: hidden;
+  margin-top: 1px;
+}
+.AccordionItem:first-child {
+  margin-top: 0;
+}
+.AccordionItem:focus-within {
+  position: relative;
+  z-index: 1;
+}
+.AccordionHeader {
+  display: flex;
+}
+.AccordionTrigger {
+  font-family: inherit;
+  font-size: 1rem;
+  background-color: transparent;
+  color: inherit;
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: none;
+  border-radius: 0;
+  border-bottom: 1px solid var(--gray-a6);
+}
+.AccordionTrigger:hover {
+  background-color: var(--gray-a4);
+}
+.AccordionContent {
+  overflow: hidden;
+  margin-top: 20px;
+}
+.AccordionContent[data-state=open] {
+  animation: slideDown .3s ease-in;
+}
+.AccordionContent[data-state=closed] {
+  animation: slideUp .3s ease-in;
+}
+.AccordionChevron {
+  transition: transform .3s linear;
+}
+.AccordionTrigger[data-state=open] > .AccordionChevron {
+  transform: rotate(180deg);
+}
+@keyframes slideDown {
+  0% {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+@keyframes slideUp {
+  0% {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
