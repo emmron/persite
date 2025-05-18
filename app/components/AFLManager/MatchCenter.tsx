@@ -79,7 +79,7 @@ export default function MatchCenter({ gameState, allPlayers }: MatchCenterProps)
     const homePlayers = allPlayers.filter(player => player.teamId === homeTeam.id);
     const awayPlayers = allPlayers.filter(player => player.teamId === awayTeam.id);
     
-    // Create lineups (simplified for now)
+    // Create lineups with detailed FM-style tactics
     const homeLineup: TeamLineup = {
       teamId: homeTeam.id,
       players: homePlayers,
@@ -87,8 +87,26 @@ export default function MatchCenter({ gameState, allPlayers }: MatchCenterProps)
         style: "balanced",
         pressure: 5,
         possession: 5,
-        riskTaking: 5
-      }
+        riskTaking: 5,
+        ballMovement: "corridor-focused",
+        defensiveStructure: "accountable-zone",
+        attackingStructure: "leading-patterns",
+        contestApproach: "outnumber-at-contest",
+        centerBounceSetup: "6-6-6",
+        quarterAdjustments: {
+          firstQuarter: "fast-start",
+          thirdQuarter: "apply-pressure",
+          finalQuarter: "protect-lead"
+        },
+        rotationSystem: {
+          type: "time-based",
+          forwardFrequency: 5,
+          midfieldFrequency: 7,
+          defenseFrequency: 10,
+          ruckStrategy: "quarters"
+        }
+      },
+      playerRoles: {}
     };
     
     const awayLineup: TeamLineup = {
@@ -98,9 +116,93 @@ export default function MatchCenter({ gameState, allPlayers }: MatchCenterProps)
         style: "balanced",
         pressure: 5,
         possession: 5,
-        riskTaking: 5
-      }
+        riskTaking: 5,
+        ballMovement: "boundary-line",
+        defensiveStructure: "zone-defense",
+        attackingStructure: "forward-target-focus",
+        contestApproach: "physical-intimidation",
+        centerBounceSetup: "5-7-5",
+        quarterAdjustments: {
+          firstQuarter: "assess-opposition",
+          thirdQuarter: "apply-pressure",
+          finalQuarter: "protect-lead"
+        },
+        rotationSystem: {
+          type: "time-based",
+          forwardFrequency: 5,
+          midfieldFrequency: 6,
+          defenseFrequency: 12,
+          ruckStrategy: "quarters"
+        }
+      },
+      playerRoles: {}
     };
+    
+    // Assign default roles based on position
+    homePlayers.forEach(player => {
+      let role = "";
+      let instructions: string[] = [];
+      
+      switch(player.position) {
+        case "Forward":
+          role = "Key Target";
+          instructions = ["Lead up at ball carrier", "Take contested marks"];
+          break;
+        case "Midfielder":
+          role = "Inside Midfielder";
+          instructions = ["Win clearances", "Distribute by hand"];
+          break;
+        case "Defender":
+          role = "Lockdown";
+          instructions = ["Stick to opponent", "Spoil contests"];
+          break;
+        case "Ruck":
+          role = "Tap Specialist";
+          instructions = ["Win hitouts", "Follow up at ground level"];
+          break;
+        default:
+          role = "General";
+          instructions = ["Follow team structure"];
+      }
+      
+      homeLineup.playerRoles[player.id] = {
+        role,
+        instructions
+      };
+    });
+    
+    // Same for away team
+    awayPlayers.forEach(player => {
+      let role = "";
+      let instructions: string[] = [];
+      
+      switch(player.position) {
+        case "Forward":
+          role = "Crumber";
+          instructions = ["Crumb from contests", "Apply forward pressure"];
+          break;
+        case "Midfielder":
+          role = "Outside Midfielder";
+          instructions = ["Receive from contests", "Use pace on wings"];
+          break;
+        case "Defender":
+          role = "Interceptor";
+          instructions = ["Read the play", "Take intercept marks"];
+          break;
+        case "Ruck":
+          role = "Around-the-Ground";
+          instructions = ["Compete in hitouts", "Be a marking target around ground"];
+          break;
+        default:
+          role = "General";
+          instructions = ["Follow team structure"];
+      }
+      
+      awayLineup.playerRoles[player.id] = {
+        role,
+        instructions
+      };
+    });
     
     // Simulate the match
     const result = simulateMatch(selectedMatch, homeTeam, awayTeam, homeLineup.players, awayLineup.players);

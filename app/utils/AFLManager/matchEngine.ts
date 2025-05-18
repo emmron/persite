@@ -86,7 +86,49 @@ export interface TeamLineup {
     pressure: number; // 1-10
     possession: number; // 1-10
     riskTaking: number; // 1-10
+    
+    // Ball Movement Style
+    ballMovement: "fast-play-on" | "corridor-focused" | "boundary-line" | "chip-and-possess" |
+                  "long-kicking" | "handball-chains" | "kick-mark" | "switch-play";
+    
+    // Defensive Structure
+    defensiveStructure: "zone-defense" | "man-on-man" | "accountable-zone" | "flooding" |
+                        "high-press" | "medium-press" | "defensive-press" | "loose-man-in-defense";
+    
+    // Attacking Structure
+    attackingStructure: "forward-press" | "structure-hold" | "leading-patterns" | "forward-motion" |
+                        "loose-man-in-attack" | "forward-target-focus" | "small-forward-crumbing" | "spread-from-contest";
+    
+    // Contest Approach
+    contestApproach: "outnumber-at-contest" | "hit-and-run" | "physical-intimidation" | "technical-precision" |
+                     "clean-hands-focus" | "quick-clearance" | "stoppage-structure" | "ruck-setup-variations";
+                    
+    // Center Bounce Setup
+    centerBounceSetup: "5-7-5" | "6-6-6" | "5-8-4" | "4-8-5" | "5-6-6";
+    
+    // Quarter-by-Quarter Adjustments
+    quarterAdjustments: {
+      firstQuarter: "fast-start" | "set-tone-physically" | "assess-opposition" | "control-possession";
+      thirdQuarter: "apply-pressure" | "run-opposition-off-feet" | "defensive-lockdown" | "risk-taking";
+      finalQuarter: "protect-lead" | "chase-game" | "ice-the-clock" | "all-out-attack";
+    };
+    
+    // Player Rotation System
+    rotationSystem: {
+      type: "time-based" | "exertion-based" | "situational" | "position-based" | "individual";
+      forwardFrequency: number; // minutes (3-8)
+      midfieldFrequency: number; // minutes (4-10)
+      defenseFrequency: number; // minutes (8-15)
+      ruckStrategy: "quarters" | "halves" | "situational";
+    };
   };
+  
+  // Player roles (keyed by player ID)
+  playerRoles: Record<string, {
+    role: string;
+    instructions: string[];
+    matchupPlayerIds?: string[]; // For tagging assignments
+  }>;
 }
 
 // Interface for match simulation result
@@ -250,6 +292,124 @@ function selectRandomPlayer(lineup: TeamLineup, position?: Position): Player {
   return eligiblePlayers[randomIndex];
 }
 
+// Helper function to generate detailed goal events with build-up
+function generateGoalEvent(
+  quarter: number,
+  timestamp: number,
+  scoringTeamId: string,
+  scoringTeam: Team,
+  scoringLineup: TeamLineup,
+  defendingTeam: Team,
+  baseMessage: string
+): MatchEvent[] {
+  const events: MatchEvent[] = [];
+  const goalTimestamp = timestamp;
+  
+  // Generate build-up sequence (happens before the goal)
+  const sequenceStart = goalTimestamp - Math.floor(Math.random() * 20) - 10; // 10-30 seconds before goal
+  
+  // 1. Initial possession
+  const initiatingPlayer = selectRandomPlayer(scoringLineup, "Midfielder");
+  events.push({
+    type: "possession",
+    teamId: scoringTeamId,
+    playerId: initiatingPlayer.id,
+    quarter,
+    message: `${initiatingPlayer.name} gathers in the center for ${scoringTeam.name}`,
+    timestamp: sequenceStart
+  });
+  
+  // 2. Middle sequence - varies based on ball movement style
+  const ballMovementStyle = scoringLineup.tactics.ballMovement;
+  let middlePlayer;
+  let middleMessage = "";
+  const middleTimestamp = sequenceStart + 5 + Math.floor(Math.random() * 5);
+  
+  switch(ballMovementStyle) {
+    case "fast-play-on":
+      middlePlayer = selectRandomPlayer(scoringLineup, "Midfielder");
+      middleMessage = `${middlePlayer.name} plays on quickly and breaks through the middle`;
+      break;
+    case "corridor-focused":
+      middlePlayer = selectRandomPlayer(scoringLineup, "Midfielder");
+      middleMessage = `${middlePlayer.name} drives forward through the corridor`;
+      break;
+    case "boundary-line":
+      middlePlayer = selectRandomPlayer(scoringLineup, "Midfielder");
+      middleMessage = `${middlePlayer.name} carries along the boundary line`;
+      break;
+    case "chip-and-possess":
+      middlePlayer = selectRandomPlayer(scoringLineup, "Midfielder");
+      middleMessage = `${middlePlayer.name} chips to a teammate to maintain possession`;
+      break;
+    case "long-kicking":
+      middlePlayer = selectRandomPlayer(scoringLineup, "Midfielder");
+      middleMessage = `${middlePlayer.name} launches a long kick inside 50`;
+      break;
+    case "handball-chains":
+      middlePlayer = selectRandomPlayer(scoringLineup, "Midfielder");
+      middleMessage = `${middlePlayer.name} links in a chain of handballs`;
+      break;
+    case "kick-mark":
+      middlePlayer = selectRandomPlayer(scoringLineup, "Midfielder");
+      middleMessage = `${middlePlayer.name} takes a strong mark in the center`;
+      break;
+    case "switch-play":
+      middlePlayer = selectRandomPlayer(scoringLineup, "Midfielder");
+      middleMessage = `${middlePlayer.name} switches play to the opposite flank`;
+      break;
+    default:
+      middlePlayer = selectRandomPlayer(scoringLineup, "Midfielder");
+      middleMessage = `${middlePlayer.name} moves the ball forward`;
+  }
+  
+  events.push({
+    type: "buildup",
+    teamId: scoringTeamId,
+    playerId: middlePlayer.id,
+    quarter,
+    message: middleMessage,
+    timestamp: middleTimestamp
+  });
+  
+  // 3. Inside 50 entry
+  const inside50Player = selectRandomPlayer(scoringLineup, "Forward");
+  const inside50Timestamp = middleTimestamp + 5 + Math.floor(Math.random() * 5);
+  
+  events.push({
+    type: "inside50",
+    teamId: scoringTeamId,
+    playerId: inside50Player.id,
+    quarter,
+    message: `${inside50Player.name} receives inside 50 and looks for options`,
+    timestamp: inside50Timestamp
+  });
+  
+  // 4. The goal itself
+  events.push({
+    type: "goal",
+    teamId: scoringTeamId,
+    playerId: inside50Player.id,
+    quarter,
+    message: baseMessage,
+    timestamp: goalTimestamp
+  });
+  
+  // 5. Occasional post-goal celebration
+  if (Math.random() > 0.7) {
+    events.push({
+      type: "celebration",
+      teamId: scoringTeamId,
+      playerId: inside50Player.id,
+      quarter,
+      message: `${inside50Player.name} celebrates with teammates after a brilliant finish`,
+      timestamp: goalTimestamp + 2
+    });
+  }
+  
+  return events;
+}
+
 // Generate match events based on team strengths and tactics
 function generateMatchEvents(
   homeTeam: Team,
@@ -262,32 +422,281 @@ function generateMatchEvents(
   const events: MatchEvent[] = [];
   const quarterScores = { home: [0, 0, 0, 0], away: [0, 0, 0, 0] };
   
+  // Add pre-match events
+  events.push({
+    type: "prematch",
+    message: `Teams are warming up at ${homeTeam.venue}. Conditions are perfect for football.`,
+    timestamp: -300 // 5 minutes before start
+  });
+  
+  events.push({
+    type: "prematch",
+    message: `Captains meet for the coin toss as both teams prepare for the first bounce.`,
+    timestamp: -60 // 1 minute before start
+  });
+  
   // Add quarter start events
   for (let quarter = 1; quarter <= 4; quarter++) {
+    const quarterStartTime = (quarter - 1) * QUARTER_LENGTH_SECONDS;
+    
     events.push({
       type: "quarter",
       quarter,
       message: `Start of Q${quarter}`,
-      timestamp: (quarter - 1) * QUARTER_LENGTH_SECONDS
+      timestamp: quarterStartTime
     });
+    
+    // Add tactical notes at start of quarters based on team tactics
+    if (quarter === 1) {
+      const homeFirstQ = homeLineup.tactics.quarterAdjustments.firstQuarter;
+      events.push({
+        type: "tactical",
+        teamId: homeTeam.id,
+        quarter,
+        message: `${homeTeam.name} looking to ${homeFirstQ === "fast-start" ? "get off to a fast start" :
+                   homeFirstQ === "set-tone-physically" ? "set the physical tone early" :
+                   homeFirstQ === "assess-opposition" ? "assess the opposition structure" :
+                   "control possession in the early stages"}`,
+        timestamp: quarterStartTime + 10
+      });
+      
+      const awayFirstQ = awayLineup.tactics.quarterAdjustments.firstQuarter;
+      events.push({
+        type: "tactical",
+        teamId: awayTeam.id,
+        quarter,
+        message: `${awayTeam.name} focusing on ${awayFirstQ === "fast-start" ? "starting quickly" :
+                   awayFirstQ === "set-tone-physically" ? "physical intimidation" :
+                   awayFirstQ === "assess-opposition" ? "reading the opposition" :
+                   "maintaining possession"}`,
+        timestamp: quarterStartTime + 20
+      });
+    } else if (quarter === 3) {
+      // Third quarter tactical notes
+      const homeThirdQ = homeLineup.tactics.quarterAdjustments.thirdQuarter;
+      events.push({
+        type: "tactical",
+        teamId: homeTeam.id,
+        quarter,
+        message: `${homeTeam.name} ${homeThirdQ === "apply-pressure" ? "increasing their pressure in the premiership quarter" :
+                   homeThirdQ === "run-opposition-off-feet" ? "looking to run the opposition off their feet" :
+                   homeThirdQ === "defensive-lockdown" ? "focusing on defensive lockdown" :
+                   "taking more risks to create scoring opportunities"}`,
+        timestamp: quarterStartTime + 15
+      });
+    } else if (quarter === 4) {
+      // Fourth quarter tactical notes
+      const homeFinalQ = homeLineup.tactics.quarterAdjustments.finalQuarter;
+      const awayFinalQ = awayLineup.tactics.quarterAdjustments.finalQuarter;
+      
+      // Only show relevant tactics based on score
+      const scoreDifference =
+        (quarterScores.home[0] + quarterScores.home[1] + quarterScores.home[2]) -
+        (quarterScores.away[0] + quarterScores.away[1] + quarterScores.away[2]);
+      
+      if (scoreDifference > 12) { // Home team leading by more than 2 goals
+        if (homeFinalQ === "protect-lead" || homeFinalQ === "ice-the-clock") {
+          events.push({
+            type: "tactical",
+            teamId: homeTeam.id,
+            quarter,
+            message: `${homeTeam.name} looking to ${homeFinalQ === "protect-lead" ? "protect their lead" : "use the clock to their advantage"}`,
+            timestamp: quarterStartTime + 10
+          });
+        }
+        
+        if (awayFinalQ === "chase-game" || awayFinalQ === "all-out-attack") {
+          events.push({
+            type: "tactical",
+            teamId: awayTeam.id,
+            quarter,
+            message: `${awayTeam.name} ${awayFinalQ === "chase-game" ? "throwing everything at chasing the game" : "going with all-out attack to close the gap"}`,
+            timestamp: quarterStartTime + 20
+          });
+        }
+      } else if (scoreDifference < -12) { // Away team leading by more than 2 goals
+        if (homeFinalQ === "chase-game" || homeFinalQ === "all-out-attack") {
+          events.push({
+            type: "tactical",
+            teamId: homeTeam.id,
+            quarter,
+            message: `${homeTeam.name} ${homeFinalQ === "chase-game" ? "desperately trying to chase down the lead" : "committing to all-out attack"}`,
+            timestamp: quarterStartTime + 10
+          });
+        }
+        
+        if (awayFinalQ === "protect-lead" || awayFinalQ === "ice-the-clock") {
+          events.push({
+            type: "tactical",
+            teamId: awayTeam.id,
+            quarter,
+            message: `${awayTeam.name} focusing on ${awayFinalQ === "protect-lead" ? "protecting their advantage" : "icing the game by controlling the clock"}`,
+            timestamp: quarterStartTime + 20
+          });
+        }
+      } else { // Close game
+        events.push({
+          type: "tactical",
+          quarter,
+          message: `Tension building in a tight final quarter as both teams aim for victory`,
+          timestamp: quarterStartTime + 15
+        });
+      }
+    }
+    
+    // Add quarter end events
+    if (quarter < 4) {
+      const quarterEndTime = quarter * QUARTER_LENGTH_SECONDS - 1;
+      events.push({
+        type: "quarter_end",
+        quarter,
+        message: `End of Q${quarter}`,
+        timestamp: quarterEndTime
+      });
+      
+      // Add coach messages at quarter breaks
+      const homeCoachMessage = `${homeTeam.coach || "Coach"} gathers the ${homeTeam.name} players for quarter time instructions`;
+      const awayCoachMessage = `${awayTeam.coach || "Coach"} delivers feedback to the ${awayTeam.name} players`;
+      
+      events.push({
+        type: "coach",
+        teamId: homeTeam.id,
+        quarter,
+        message: homeCoachMessage,
+        timestamp: quarterEndTime + 10
+      });
+      
+      events.push({
+        type: "coach",
+        teamId: awayTeam.id,
+        quarter,
+        message: awayCoachMessage,
+        timestamp: quarterEndTime + 20
+      });
+    }
   }
   
-  // Calculate scoring probabilities based on team strengths
-  const homeScoringChance = (homeStrength.attack * 0.7 + homeStrength.midfield * 0.3) / 100;
-  const awayScoringChance = (awayStrength.attack * 0.7 + awayStrength.midfield * 0.3) / 100;
+  // Calculate scoring probabilities based on team strengths and tactics
+  let homeScoringChance = (homeStrength.attack * 0.7 + homeStrength.midfield * 0.3) / 100;
+  let awayScoringChance = (awayStrength.attack * 0.7 + awayStrength.midfield * 0.3) / 100;
+  
+  // Adjust based on tactics
+  if (homeLineup.tactics.style === "attacking") {
+    homeScoringChance *= 1.2;
+  } else if (homeLineup.tactics.style === "defensive") {
+    homeScoringChance *= 0.8;
+    awayScoringChance *= 0.9; // Opponent finds it harder to score
+  }
+  
+  if (awayLineup.tactics.style === "attacking") {
+    awayScoringChance *= 1.2;
+  } else if (awayLineup.tactics.style === "defensive") {
+    awayScoringChance *= 0.8;
+    homeScoringChance *= 0.9; // Opponent finds it harder to score
+  }
+  
+  // Adjust based on ball movement style
+  if (homeLineup.tactics.ballMovement === "fast-play-on" || homeLineup.tactics.ballMovement === "long-kicking") {
+    homeScoringChance *= 1.1; // More direct styles create more scoring chances
+  }
+  
+  if (awayLineup.tactics.ballMovement === "fast-play-on" || awayLineup.tactics.ballMovement === "long-kicking") {
+    awayScoringChance *= 1.1;
+  }
   
   // Normalize to ensure reasonable number of scoring events
   const totalScoringChance = homeScoringChance + awayScoringChance;
   const normalizedHomeScoringChance = homeScoringChance / totalScoringChance;
   
   // Determine number of scoring events per quarter (more realistic distribution)
-  const totalScoringEvents = Math.floor(AVERAGE_SCORING_EVENTS_PER_MATCH * 
+  const totalScoringEvents = Math.floor(AVERAGE_SCORING_EVENTS_PER_MATCH *
     (0.8 + Math.random() * 0.4)); // 80-120% of average
   
   // Distribute events across quarters with increasing intensity
   const quarterDistribution = [0.2, 0.25, 0.25, 0.3]; // Last quarter has more scoring
   
-  // Generate all four quarters of events
+  // Generate non-scoring events
+  const totalNonScoringEvents = 120; // Approximately one every 60 seconds on average
+  const nonScoringEventTypes = [
+    "mark", "tackle", "clearance", "intercept", "inside50", "rebound50", "injury", "substitution"
+  ];
+  
+  for (let quarter = 1; quarter <= 4; quarter++) {
+    const quarterStartTime = (quarter - 1) * QUARTER_LENGTH_SECONDS;
+    const quarterEndTime = quarter * QUARTER_LENGTH_SECONDS;
+    
+    // Add non-scoring events
+    const quarterNonScoringEvents = Math.floor(totalNonScoringEvents * quarterDistribution[quarter - 1]);
+    for (let i = 0; i < quarterNonScoringEvents; i++) {
+      const timestamp = quarterStartTime + Math.floor(Math.random() * QUARTER_LENGTH_SECONDS);
+      const isHomeTeamEvent = Math.random() < normalizedHomeScoringChance;
+      const team = isHomeTeamEvent ? homeTeam : awayTeam;
+      const lineup = isHomeTeamEvent ? homeLineup : awayLineup;
+      
+      const eventType = nonScoringEventTypes[Math.floor(Math.random() * nonScoringEventTypes.length)];
+      
+      // Select appropriate player for event type
+      let player;
+      let message = "";
+      
+      switch (eventType) {
+        case "mark":
+          player = selectRandomPlayer(lineup, Math.random() < 0.6 ? "Forward" : undefined);
+          message = `${player.name} takes a strong mark for ${team.name}`;
+          break;
+        case "tackle":
+          player = selectRandomPlayer(lineup, Math.random() < 0.7 ? "Midfielder" : undefined);
+          message = `${player.name} lays a fierce tackle in the midfield`;
+          break;
+        case "clearance":
+          player = selectRandomPlayer(lineup, "Midfielder");
+          message = `${player.name} wins the clearance for ${team.name}`;
+          break;
+        case "intercept":
+          player = selectRandomPlayer(lineup, "Defender");
+          message = `${player.name} reads the play perfectly to intercept`;
+          break;
+        case "inside50":
+          player = selectRandomPlayer(lineup, Math.random() < 0.6 ? "Midfielder" : undefined);
+          message = `${player.name} drives ${team.name} inside 50`;
+          break;
+        case "rebound50":
+          player = selectRandomPlayer(lineup, "Defender");
+          message = `${player.name} rebounds out of defensive 50`;
+          break;
+        case "injury":
+          // Rare event
+          if (Math.random() < 0.1) {
+            player = selectRandomPlayer(lineup);
+            message = `${player.name} appears to have picked up a knock`;
+            break;
+          }
+          continue;
+        case "substitution":
+          // Occasional substitution
+          if (Math.random() < 0.3) {
+            player = selectRandomPlayer(lineup);
+            message = `${player.name} rotates to the bench for a rest`;
+            break;
+          }
+          continue;
+        default:
+          player = selectRandomPlayer(lineup);
+          message = `${player.name} wins the ball for ${team.name}`;
+      }
+      
+      events.push({
+        type: eventType,
+        teamId: team.id,
+        playerId: player.id,
+        quarter,
+        message,
+        timestamp
+      });
+    }
+  }
+  
+  // Generate all four quarters of scoring events
   let homeGoals = 0;
   let homeBehinds = 0;
   let awayGoals = 0;
@@ -310,23 +719,45 @@ function generateMatchEvents(
       if (isGoal) {
         homeGoals++;
         quarterScores.home[quarter-1] += 6;
-        events.push({
-          type: "goal",
-          teamId: homeTeam.id,
-          playerId: player.id,
+        
+        // Generate detailed goal sequence with build-up
+        const goalMessage = `GOAL! ${player.name} kicks a goal for ${homeTeam.name}`;
+        const goalSequence = generateGoalEvent(
           quarter,
-          message: `GOAL! ${player.name} kicks a goal for ${homeTeam.name}`,
-          timestamp
-        });
+          timestamp,
+          homeTeam.id,
+          homeTeam,
+          homeLineup,
+          awayTeam,
+          goalMessage
+        );
+        
+        // Add all goal sequence events
+        events.push(...goalSequence);
       } else {
         homeBehinds++;
         quarterScores.home[quarter-1] += 1;
+        
+        // Different types of behinds
+        let behindMessage = "";
+        const behindType = Math.random();
+        
+        if (behindType < 0.4) {
+          behindMessage = `Behind. ${player.name}'s shot is slightly offline for ${homeTeam.name}`;
+        } else if (behindType < 0.7) {
+          behindMessage = `Behind. ${player.name}'s kick is rushed through by the ${awayTeam.name} defense`;
+        } else if (behindType < 0.9) {
+          behindMessage = `Behind. ${player.name} hits the post for ${homeTeam.name}`;
+        } else {
+          behindMessage = `Behind. ${player.name}'s shot is touched on the line`;
+        }
+        
         events.push({
           type: "behind",
           teamId: homeTeam.id,
           playerId: player.id,
           quarter,
-          message: `Behind. ${player.name} scores a behind for ${homeTeam.name}`,
+          message: behindMessage,
           timestamp
         });
       }
@@ -343,27 +774,96 @@ function generateMatchEvents(
       if (isGoal) {
         awayGoals++;
         quarterScores.away[quarter-1] += 6;
-        events.push({
-          type: "goal",
-          teamId: awayTeam.id,
-          playerId: player.id,
+        
+        // Generate detailed goal sequence with build-up
+        const goalMessage = `GOAL! ${player.name} kicks a goal for ${awayTeam.name}`;
+        const goalSequence = generateGoalEvent(
           quarter,
-          message: `GOAL! ${player.name} kicks a goal for ${awayTeam.name}`,
-          timestamp
-        });
+          timestamp,
+          awayTeam.id,
+          awayTeam,
+          awayLineup,
+          homeTeam,
+          goalMessage
+        );
+        
+        // Add all goal sequence events
+        events.push(...goalSequence);
       } else {
         awayBehinds++;
         quarterScores.away[quarter-1] += 1;
+        
+        // Different types of behinds
+        let behindMessage = "";
+        const behindType = Math.random();
+        
+        if (behindType < 0.4) {
+          behindMessage = `Behind. ${player.name}'s shot is slightly offline for ${awayTeam.name}`;
+        } else if (behindType < 0.7) {
+          behindMessage = `Behind. ${player.name}'s kick is rushed through by the ${homeTeam.name} defense`;
+        } else if (behindType < 0.9) {
+          behindMessage = `Behind. ${player.name} hits the post for ${awayTeam.name}`;
+        } else {
+          behindMessage = `Behind. ${player.name}'s shot is touched on the line`;
+        }
+        
         events.push({
           type: "behind",
           teamId: awayTeam.id,
           playerId: player.id,
           quarter,
-          message: `Behind. ${player.name} scores a behind for ${awayTeam.name}`,
+          message: behindMessage,
           timestamp
         });
       }
     }
+    
+    // Add momentum shift events
+    if (quarterScores.home[quarter-1] > 18 && quarterScores.home[quarter-1] > 2 * quarterScores.away[quarter-1]) {
+      // Home team has a big lead in this quarter
+      events.push({
+        type: "momentum",
+        teamId: homeTeam.id,
+        quarter,
+        message: `${homeTeam.name} with all the momentum in Q${quarter}`,
+        timestamp: (quarter - 1) * QUARTER_LENGTH_SECONDS + QUARTER_LENGTH_SECONDS * 0.7 // Later in quarter
+      });
+    } else if (quarterScores.away[quarter-1] > 18 && quarterScores.away[quarter-1] > 2 * quarterScores.home[quarter-1]) {
+      // Away team has a big lead in this quarter
+      events.push({
+        type: "momentum",
+        teamId: awayTeam.id,
+        quarter,
+        message: `${awayTeam.name} dominating the flow of play in Q${quarter}`,
+        timestamp: (quarter - 1) * QUARTER_LENGTH_SECONDS + QUARTER_LENGTH_SECONDS * 0.7
+      });
+    }
+  }
+  
+  // Add final quarter drama events if the game is close
+  const finalScore = {
+    home: quarterScores.home.reduce((sum, score) => sum + score, 0),
+    away: quarterScores.away.reduce((sum, score) => sum + score, 0)
+  };
+  
+  const scoreDifference = Math.abs(finalScore.home - finalScore.away);
+  
+  if (scoreDifference <= 12) { // Within 2 goals
+    const finalMinutes = MATCH_LENGTH_SECONDS - 180; // Last 3 minutes
+    
+    // Add tension narrative
+    events.push({
+      type: "commentary",
+      message: "Tension building as we enter the final minutes with scores incredibly close",
+      timestamp: finalMinutes
+    });
+    
+    // Add final dramatic moment
+    events.push({
+      type: "commentary",
+      message: "The crowd is on its feet as we approach the final siren in this nail-biter!",
+      timestamp: MATCH_LENGTH_SECONDS - 30
+    });
   }
   
   // Add final siren event
@@ -372,6 +872,44 @@ function generateMatchEvents(
     message: "FINAL SIREN! The match is over.",
     timestamp: MATCH_LENGTH_SECONDS
   });
+  
+  // Add post-match reaction based on result
+  if (finalScore.home > finalScore.away) {
+    events.push({
+      type: "postmatch",
+      teamId: homeTeam.id,
+      message: `${homeTeam.name} players celebrate a well-earned victory`,
+      timestamp: MATCH_LENGTH_SECONDS + 10
+    });
+    
+    events.push({
+      type: "postmatch",
+      teamId: awayTeam.id,
+      message: `Disappointment for ${awayTeam.name} as they reflect on where the match was lost`,
+      timestamp: MATCH_LENGTH_SECONDS + 20
+    });
+  } else if (finalScore.away > finalScore.home) {
+    events.push({
+      type: "postmatch",
+      teamId: awayTeam.id,
+      message: `${awayTeam.name} players celebrate a terrific away win`,
+      timestamp: MATCH_LENGTH_SECONDS + 10
+    });
+    
+    events.push({
+      type: "postmatch",
+      teamId: homeTeam.id,
+      message: `${homeTeam.name} will be disappointed to lose on home soil`,
+      timestamp: MATCH_LENGTH_SECONDS + 20
+    });
+  } else {
+    // Draw
+    events.push({
+      type: "postmatch",
+      message: `Players from both teams share handshakes after a drawn match`,
+      timestamp: MATCH_LENGTH_SECONDS + 15
+    });
+  }
   
   // Sort events by timestamp
   events.sort((a, b) => a.timestamp - b.timestamp);
@@ -1172,7 +1710,7 @@ export function simulateMatch(
   homePlayers: Player[],
   awayPlayers: Player[]
 ): MatchSimulationResult {
-  // Create lineups
+  // Create lineups with detailed tactics
   const homeLineup: TeamLineup = {
     teamId: homeTeam.id,
     players: homePlayers,
@@ -1180,8 +1718,26 @@ export function simulateMatch(
       style: "balanced",
       pressure: 5,
       possession: 5,
-      riskTaking: 5
-    }
+      riskTaking: 5,
+      ballMovement: "corridor-focused",
+      defensiveStructure: "accountable-zone",
+      attackingStructure: "leading-patterns",
+      contestApproach: "outnumber-at-contest",
+      centerBounceSetup: "6-6-6",
+      quarterAdjustments: {
+        firstQuarter: "fast-start",
+        thirdQuarter: "apply-pressure",
+        finalQuarter: "protect-lead"
+      },
+      rotationSystem: {
+        type: "time-based",
+        forwardFrequency: 5,
+        midfieldFrequency: 7,
+        defenseFrequency: 10,
+        ruckStrategy: "quarters"
+      }
+    },
+    playerRoles: {}
   };
   
   const awayLineup: TeamLineup = {
@@ -1191,9 +1747,95 @@ export function simulateMatch(
       style: "balanced",
       pressure: 5,
       possession: 5,
-      riskTaking: 5
-    }
+      riskTaking: 5,
+      ballMovement: "boundary-line",
+      defensiveStructure: "zone-defense",
+      attackingStructure: "forward-target-focus",
+      contestApproach: "physical-intimidation",
+      centerBounceSetup: "5-7-5",
+      quarterAdjustments: {
+        firstQuarter: "assess-opposition",
+        thirdQuarter: "apply-pressure",
+        finalQuarter: "protect-lead"
+      },
+      rotationSystem: {
+        type: "time-based",
+        forwardFrequency: 5,
+        midfieldFrequency: 6,
+        defenseFrequency: 12,
+        ruckStrategy: "quarters"
+      }
+    },
+    playerRoles: {}
   };
+  
+  // Assign default roles based on position
+  homePlayers.forEach(player => {
+    let role = "";
+    let instructions: string[] = [];
+    
+    switch(player.position) {
+      case "Forward":
+        role = "Key Target";
+        instructions = ["Lead up at ball carrier", "Take contested marks"];
+        break;
+      case "Midfielder":
+        role = "Inside Midfielder";
+        instructions = ["Win clearances", "Distribute by hand"];
+        break;
+      case "Defender":
+        role = "Lockdown";
+        instructions = ["Stick to opponent", "Spoil contests"];
+        break;
+      case "Ruck":
+        role = "Tap Specialist";
+        instructions = ["Win hitouts", "Follow up at ground level"];
+        break;
+      case "Utility":
+        role = "Link";
+        instructions = ["Provide options", "Cover multiple positions"];
+        break;
+    }
+    
+    homeLineup.playerRoles[player.id] = {
+      role,
+      instructions
+    };
+  });
+  
+  // Same for away team
+  awayPlayers.forEach(player => {
+    let role = "";
+    let instructions: string[] = [];
+    
+    switch(player.position) {
+      case "Forward":
+        role = "Crumber";
+        instructions = ["Crumb from contests", "Apply forward pressure"];
+        break;
+      case "Midfielder":
+        role = "Outside Midfielder";
+        instructions = ["Receive from contests", "Use pace on wings"];
+        break;
+      case "Defender":
+        role = "Interceptor";
+        instructions = ["Read the play", "Take intercept marks"];
+        break;
+      case "Ruck":
+        role = "Around-the-Ground";
+        instructions = ["Compete in hitouts", "Be a marking target around ground"];
+        break;
+      case "Utility":
+        role = "Distributor";
+        instructions = ["Link up play", "Use skills in transition"];
+        break;
+    }
+    
+    awayLineup.playerRoles[player.id] = {
+      role,
+      instructions
+    };
+  });
   
   // Calculate team strengths
   const homeStrength = calculateTeamStrength(homeTeam, homeLineup, awayTeam);
