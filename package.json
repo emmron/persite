@@ -5,8 +5,8 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "remix vite:build",
-    "dev": "remix vite:dev",
+    "build": "remix build",
+    "dev": "remix dev",
     "typecheck": "tsc"
   },
   "dependencies": {

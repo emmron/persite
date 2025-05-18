@@ -268,23 +268,12 @@ function configureBuild(rootPath: string, isProd: boolean, env: EnvConfig) {
 }
 
 /**
- * Get a list of supported browsers for the build target
+ * Get target for esbuild
  * @param isProd Production flag
  */
-function getBrowserslist(isProd: boolean): string[] {
-  return isProd
-    ? [
-        '> 1%',
-        'last 2 versions',
-        'Firefox ESR',
-        'not dead',
-        'not IE 11'
-      ]
-    : [
-        'last 2 Chrome versions',
-        'last 2 Firefox versions',
-        'last 1 Safari version'
-      ];
+function getEsbuildTarget(isProd: boolean): string {
+  // Use a single target string compatible with esbuild
+  return isProd ? 'es2019' : 'esnext';
 }
 
 // https://vitejs.dev/config/
@@ -327,7 +316,15 @@ export default defineConfig(({ mode, command }): UserConfig => {
         // Ignore test files, spec files and hidden files in routes
         ignoredRouteFiles: ["**/.*", "**/*.test.{js,jsx,ts,tsx}", "**/*.spec.{js,jsx,ts,tsx}"],
         serverModuleFormat: "esm",
-        // Remove future flags that are causing TypeScript errors
+        // Add recommended future flags from warnings
+        future: {
+          // Future flags from warnings
+          v3_fetcherPersist: true,
+          v3_lazyRouteDiscovery: true,
+          v3_relativeSplatPath: true,
+          v3_singleFetch: true,
+          v3_throwAbortReason: true,
+        }
         // Check Remix documentation for currently supported options
       }),
       
@@ -366,7 +363,7 @@ export default defineConfig(({ mode, command }): UserConfig => {
       force: isProd,
       // Consistent build target with main build
       esbuildOptions: {
-        target: getBrowserslist(isProd).join(','),
+        target: getEsbuildTarget(isProd),
         // Support JSX automatically
         jsx: 'automatic',
         jsxImportSource: 'react',
