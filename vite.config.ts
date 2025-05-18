@@ -330,7 +330,7 @@ export default defineConfig(({ mode, command }): UserConfig => {
         serverModuleFormat: "esm",
         // Enable future features for better compatibility
         future: {
-          v2_dev: true,
+          // Only include future features that exist in the current version
           v2_errorBoundary: true,
           v2_meta: true,
           v2_normalizeFormMethod: true,
