@@ -247,10 +247,9 @@ function configureBuild(rootPath: string, isProd: boolean, env: EnvConfig) {
     },
     // CSS optimization
     cssCodeSplit: true,
-    cssMinify: isProd,
-    cssTarget: isProd ? 'es2019' : 'esnext',
-    // Minification options
-    minify: isProd ? 'esbuild' : false,
+    // Using only valid options for the Vite version
+    // Minification options - using type-safe values
+    minify: isProd ? ('esbuild' as const) : false,
     terserOptions: isProd ? {
       compress: {
         drop_console: env.REMOVE_CONSOLE === 'true',
@@ -328,14 +327,8 @@ export default defineConfig(({ mode, command }): UserConfig => {
         // Ignore test files, spec files and hidden files in routes
         ignoredRouteFiles: ["**/.*", "**/*.test.{js,jsx,ts,tsx}", "**/*.spec.{js,jsx,ts,tsx}"],
         serverModuleFormat: "esm",
-        // Enable future features for better compatibility
-        future: {
-          // Only include future features that exist in the current version
-          v2_errorBoundary: true,
-          v2_meta: true,
-          v2_normalizeFormMethod: true,
-          v2_routeConvention: true,
-        },
+        // Remove future flags that are causing TypeScript errors
+        // Check Remix documentation for currently supported options
       }),
       
       // Enable TypeScript path aliases with additional options
@@ -365,8 +358,7 @@ export default defineConfig(({ mode, command }): UserConfig => {
         'react',
         'react-dom',
         'react-router-dom',
-        // Add UI libraries that are commonly used
-        '@radix-ui/themes',
+        // Only include libraries that are actually used in the project
       ],
       // Exclude any problematic dependency if needed
       exclude: [],
