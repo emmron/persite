@@ -92,8 +92,8 @@ export default function AFLManager() {
 
   // Handle advance day
   const handleAdvanceDay = useCallback(() => {
-    const newGameState = advanceGameDay(gameState);
-    setGameState(newGameState);
+    const { newState, dailySummary } = advanceGameDay(gameState, teams);
+    setGameState(newState);
   }, [gameState]);
   
   // Handle schedule training
@@ -189,7 +189,43 @@ export default function AFLManager() {
 
     switch (activeSection) {
       case "dashboard":
-        return <Dashboard gameState={gameState} allPlayers={allPlayers} />;
+        return (
+          <Dashboard
+            gameState={gameState}
+            allPlayers={allPlayers}
+            onAdvanceDay={handleAdvanceDay}
+            onPrepareMatch={(matchId) => {
+              const match = gameState.seasonFixtures.find(m => m.id === matchId);
+              if (match) {
+                setGameState({
+                  ...gameState,
+                  activeMatchId: matchId
+                });
+                setActiveSection("match");
+              }
+            }}
+            onSimulateToDate={(date) => {
+              // Logic to simulate to a specific date
+              console.log(`Simulating to date: ${date}`);
+              // Simple implementation - just set the current date
+              setGameState({
+                ...gameState,
+                currentDate: date
+              });
+            }}
+            lastDailySummary={gameState.lastDailySummary}
+            userPrompts={gameState.userPrompts}
+            onUserPromptAction={(prompt) => {
+              // Handle prompt action
+              console.log(`Handling prompt: ${prompt.id}`);
+              // Remove the prompt from the list
+              setGameState({
+                ...gameState,
+                userPrompts: gameState.userPrompts.filter(p => p.id !== prompt.id)
+              });
+            }}
+          />
+        );
       case "team":
         return <TeamManagement gameState={gameState} allPlayers={allPlayers} />;
       case "match":
@@ -212,7 +248,21 @@ export default function AFLManager() {
           />
         );
       default:
-        return <Dashboard gameState={gameState} allPlayers={allPlayers} />;
+        return <Dashboard
+          gameState={gameState}
+          allPlayers={allPlayers}
+          onAdvanceDay={handleAdvanceDay}
+          onPrepareMatch={(matchId) => {
+            const match = gameState.seasonFixtures.find(m => m.id === matchId);
+            if (match) {
+              setGameState({
+                ...gameState,
+                activeMatchId: matchId
+              });
+              setActiveSection("match");
+            }
+          }}
+        />;
     }
   };
 

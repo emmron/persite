@@ -278,12 +278,13 @@ export default function Dashboard({ gameState, allPlayers, onAdvanceDay, onPrepa
     <Box>
       <Flex justify="between" align="center" mb="4">
         <Heading size="6">Dashboard</Heading>
-        <Button 
-          size="3" 
-          variant="solid" 
+        <Button
+          size="3"
+          variant="solid"
           disabled={mainButtonDisabled}
           title={mainButtonTitle}
           color={mainButtonColor}
+          onClick={() => mainButtonAction()}
         >
           {mainButtonColor === "blue" ? <PlayIcon /> : mainButtonColor === "gray" ? <InfoCircledIcon /> : <ChevronRightIcon />} {mainButtonText}
         </Button>
@@ -384,10 +385,82 @@ export default function Dashboard({ gameState, allPlayers, onAdvanceDay, onPrepa
               </Text>
             </Box>
           </Grid>
+        </Card>
 
-          <Separator size="4" my="3" />
+        {/* Upcoming Matches */}
+        <Card variant="surface">
+          <Heading size="4" mb="2">Upcoming Matches</Heading>
+          {upcomingMatches.length > 0 ? (
+            <Flex direction="column" gap="2">
+              {upcomingMatches.map((match) => {
+                const opponent = getOpponentTeam(match);
+                const venue = getMatchVenue(match);
+                return (
+                  <Card key={match.id} size="1" variant="surface">
+                    <Flex justify="between" align="center">
+                      <Box>
+                        <Text weight="bold">
+                          {match.homeTeamId === gameState.userTeamId ? `${userTeam.name} vs ${opponent?.name}` : `${opponent?.name} vs ${userTeam.name}`}
+                        </Text>
+                        <Text size="1" color="gray">
+                          {formatMatchDate(match.date)} • {venue}
+                        </Text>
+                      </Box>
+                      <Button
+                        size="1"
+                        variant="soft"
+                        onClick={() => handlePrepareMatch(match.id)}
+                        disabled={match.date !== gameState.currentDate || !!gameState.activeMatchId}
+                      >
+                        {match.date === gameState.currentDate ? "Prepare" : "Preview"}
+                      </Button>
+                    </Flex>
+                  </Card>
+                );
+              })}
+            </Flex>
+          ) : (
+            <Text color="gray">No upcoming matches scheduled.</Text>
+          )}
+        </Card>
 
-          <Heading size="3" mb="2">This Week's Agenda</Heading>
+        {/* Top Players */}
+        <Card variant="surface">
+          <Heading size="4" mb="2">Top Players</Heading>
+          {topPlayers.length > 0 ? (
+            <Flex direction="column" gap="2">
+              {topPlayers.map((player) => (
+                <Card key={player.id} size="1" variant="surface">
+                  <Flex justify="between" align="center">
+                    <Box>
+                      <Text weight="bold">{player.name}</Text>
+                      <Text size="2" color="gray">{player.position}</Text>
+                    </Box>
+                    <Badge variant="soft" color="blue">
+                      Rating: {((
+                        player.attributes.speed +
+                        player.attributes.strength +
+                        player.attributes.stamina +
+                        player.attributes.agility +
+                        player.attributes.intelligence +
+                        player.attributes.kicking +
+                        player.attributes.marking +
+                        player.attributes.handball +
+                        player.attributes.tackling
+                      ) / 9).toFixed(1)}
+                    </Badge>
+                  </Flex>
+                </Card>
+              ))}
+            </Flex>
+          ) : (
+            <Text color="gray">No player data available.</Text>
+          )}
+        </Card>
+      </Grid>
+      <Separator size="4" my="3" />
+
+      <Heading size="3" mb="2">This Week's Agenda</Heading>
           <Grid columns="7" gap="1" mb="3" style={{textAlign: 'center'}}>
             {dailyActivities.map((activity) => {
               const isClickable = onSimulateToDate && 
@@ -473,12 +546,12 @@ export default function Dashboard({ gameState, allPlayers, onAdvanceDay, onPrepa
             })}
           </Grid>
           
-          <Separator size="4" my="3" />
+      <Separator size="4" my="3" />
 
-          <Heading size="3" mb="2">Next Key Events</Heading>
-          {nextThreeKeyEvents.length > 0 ? (
-            <Flex direction="column" gap="2">
-              {nextThreeKeyEvents.map((event, index) => (
+      <Heading size="3" mb="2">Next Key Events</Heading>
+      {nextThreeKeyEvents.length > 0 ? (
+        <Flex direction="column" gap="2">
+          {nextThreeKeyEvents.map((event, index) => (
                 <Card key={index} size="1" variant="surface">
                   <Flex justify="between" align="center">
                     <Box>
@@ -488,15 +561,17 @@ export default function Dashboard({ gameState, allPlayers, onAdvanceDay, onPrepa
                     <Badge color="purple" style={{textTransform: 'capitalize'}}>
                       {event.type.replace(/_/g, ' ')}
                     </Badge>
-                  </Flex>
-                </Card>
-              ))}
-            </Flex>
-          ) : (
-            <Text color="gray">No major upcoming events scheduled in the near future.</Text>
-          )}
-        </Card>
-        
+              </Flex>
+            </Card>
+          ))}
+        </Flex>
+      ) : (
+        <Text color="gray">No major upcoming events scheduled in the near future.</Text>
+      )}
+      
+      <Separator size="4" my="3" />
+      
+      <Grid columns={{ initial: "1", md: "2", lg: "3" }} gap="4">
         {/* Club Health - NEW CARD */}
         <Card variant="surface">
           <Heading size="4" mb="2">Club Health</Heading>
@@ -581,3 +656,8 @@ export default function Dashboard({ gameState, allPlayers, onAdvanceDay, onPrepa
               <Text>{teamMoraleDisplay}</Text>
             </Box>
           </Grid>
+        </Card>
+      </Grid>
+    </Box>
+  );
+}
